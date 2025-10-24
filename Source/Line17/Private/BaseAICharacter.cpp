@@ -3,6 +3,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/StaticMeshComponent.h" // 큐브
 #include "Materials/MaterialInstanceDynamic.h" // 색
+#include "Melee_Wooden_Club.h" // 각목
 
 // Sets default values
 ABaseAICharacter::ABaseAICharacter()
@@ -48,6 +49,11 @@ void ABaseAICharacter::BeginPlay()
 
 	// 게임 시작 시 기본 상태인 순찰 색상으로 설정
 	UpdateStateColor(EAIState::Patrolling);
+
+	//근접무기 손에 들기 테스트
+	Melee_Wooden_Club = GetWorld()->SpawnActor<AMelee_Wooden_Club>(Melee_Wooden_ClubTclass);
+	Melee_Wooden_Club->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("middle_01_lSocket"));
+	Melee_Wooden_Club->SetOwner(this);
 }
 
 // 테스트용 함수

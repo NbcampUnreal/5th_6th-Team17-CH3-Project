@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "BaseAICharacter.generated.h"
 
+class AMelee_Wooden_Club;
+
 // test 용 색깔
 UENUM(BlueprintType)
 enum class EAIState : uint8
@@ -47,6 +49,11 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	//각목 생성
 public:
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee")
+	TSubclassOf< AMelee_Wooden_Club> Melee_Wooden_ClubTclass;
+	
+	UPROPERTY()
+	AMelee_Wooden_Club* Melee_Wooden_Club;
 };
