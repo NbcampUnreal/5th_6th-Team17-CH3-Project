@@ -151,12 +151,12 @@ void ABasePlayerCharacter::ChangeToNonWeapon(const FInputActionValue& inputValue
 void ABasePlayerCharacter::SniperAim(const FInputActionValue & inputValue)
 {
 	// 스나이퍼건 모드가 아니면 처리하지 않음
-	if (bUsingSniperGun == false)
+	if (!bUsingSniperGun)
 	{
 		return;
 	}
 	// Pressed 입력 처리
-	if (bUsingSniperGun == true)
+	if (bSniperAim == false)
 	{
 		// 스나이퍼 조준 모드 활성화
 		bSniperAim = true;
