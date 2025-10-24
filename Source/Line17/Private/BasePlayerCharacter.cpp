@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Kismet/GameplayStatics.h"
+#include  <Blueprint/UserWidget.h>
 
 ABasePlayerCharacter::ABasePlayerCharacter()
 {
@@ -49,6 +50,10 @@ ABasePlayerCharacter::ABasePlayerCharacter()
 void ABasePlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// 1. 스나이퍼 UI 위젯 인스턴스 생성
+	_sniperUI = CreateWidget(GetWorld(), sniperUIFactory);
+	
 	// 기본으로 스나이퍼건을 사용하도록 설정
 	ChangeToSniperGun(FInputActionValue());
 }
@@ -81,6 +86,10 @@ void ABasePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 			// 총알 발사 이벤트 처리 함수 바인딩
 			EnhancedInput->BindAction(PlayerController->Fire, ETriggerEvent::Started, this, &ABasePlayerCharacter::InputFire);
+
+			// 스나이퍼 조준 모드 이벤트 처리 함수 바인딩
+			EnhancedInput->BindAction(PlayerController->SniperZoom, ETriggerEvent::Started, this, &ABasePlayerCharacter::SniperAim);
+			EnhancedInput->BindAction(PlayerController->SniperZoom, ETriggerEvent::Completed, this, &ABasePlayerCharacter::SniperAim);
 		}
 	}
 }
@@ -136,6 +145,37 @@ void ABasePlayerCharacter::ChangeToNonWeapon(const FInputActionValue& inputValue
 	// 스나이퍼건 사용 중 아님으로 체크
 	bUsingSniperGun = false;
 	sniperGunComp->SetVisibility(false);
+}
+
+// 스나이퍼 조준
+void ABasePlayerCharacter::SniperAim(const FInputActionValue & inputValue)
+{
+	// 스나이퍼건 모드가 아니면 처리하지 않음
+	if (bUsingSniperGun == false)
+	{
+		return;
+	}
+	// Pressed 입력 처리
+	if (bUsingSniperGun == true)
+	{
+		// 스나이퍼 조준 모드 활성화
+		bSniperAim = true;
+		// 스나이퍼조준 UI 등록
+		_sniperUI->AddToViewport();
+		// 카메라의 시야각 Field Of View 설정
+		CameraComp->SetFieldOfView(45.0f);
+	}
+
+	// Released 입력 처리
+	else 
+	{
+		// 스나이퍼 조준 모드 활성화
+		bSniperAim = false;
+		// 스나이퍼조준 UI 등록
+		_sniperUI->RemoveFromParent();
+		// 카메라의 시야각 Field Of View 설정
+		CameraComp->SetFieldOfView(90.0f);
+	}
 }
 
 // 사격 개시

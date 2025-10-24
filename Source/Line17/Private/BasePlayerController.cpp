@@ -9,6 +9,7 @@ ABasePlayerController::ABasePlayerController()
 	SprintAction(nullptr),
 	SniperGun(nullptr),
 	NonWeapon(nullptr),
+	SniperZoom(nullptr),
 	Fire(nullptr)
 {
 }

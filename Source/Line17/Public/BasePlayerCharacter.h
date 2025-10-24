@@ -33,6 +33,20 @@ public:
 	// 무기 장착 해제
 	void ChangeToNonWeapon(const struct FInputActionValue& inputValue);
 
+	// 스나이퍼 조준처리함수
+	void SniperAim(const struct FInputActionValue& inputValue);
+
+	// 스나이퍼 조준 중인지 여부
+	bool bSniperAim = false;
+
+	// 스나이퍼 UI 위젯 공장
+	UPROPERTY(EditDefaultsOnly, Category = SniperUI)
+	TSubclassOf<class UUserWidget> sniperUIFactory;
+
+	// 스나이퍼 UI 위젯 인스턴스
+	UPROPERTY()
+	class UUserWidget* _sniperUI;
+
 	// 총알 발사 처리함수
 	void InputFire(const struct FInputActionValue& inputValue);
 
