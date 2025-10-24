@@ -32,6 +32,13 @@ public:
 	void ChangeToSniperGun(const struct FInputActionValue& inputValue);
 	// 무기 장착 해제
 	void ChangeToNonWeapon(const struct FInputActionValue& inputValue);
+
+	// 총알 발사 처리함수
+	void InputFire(const struct FInputActionValue& inputValue);
+
+	// 총알 파편 효과 공장
+	UPROPERTY(EditAnywhere, Category = BulletEffect)
+	class UParticleSystem* bulletEffectFactory;
 	
 protected:
 	virtual void BeginPlay() override;

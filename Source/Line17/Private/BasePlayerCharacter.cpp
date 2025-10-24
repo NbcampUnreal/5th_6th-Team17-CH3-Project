@@ -6,6 +6,7 @@
 #include "BasePlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Kismet/GameplayStatics.h"
 
 ABasePlayerCharacter::ABasePlayerCharacter()
 {
@@ -77,6 +78,9 @@ void ABasePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 			// 총 교체 이벤트 처리 함수 바인딩
 			EnhancedInput->BindAction(PlayerController->SniperGun, ETriggerEvent::Started, this, &ABasePlayerCharacter::ChangeToSniperGun);
 			EnhancedInput->BindAction(PlayerController->NonWeapon, ETriggerEvent::Started, this, &ABasePlayerCharacter::ChangeToNonWeapon);
+
+			// 총알 발사 이벤트 처리 함수 바인딩
+			EnhancedInput->BindAction(PlayerController->Fire, ETriggerEvent::Started, this, &ABasePlayerCharacter::InputFire);
 		}
 	}
 }
@@ -132,4 +136,36 @@ void ABasePlayerCharacter::ChangeToNonWeapon(const FInputActionValue& inputValue
 	// 스나이퍼건 사용 중 아님으로 체크
 	bUsingSniperGun = false;
 	sniperGunComp->SetVisibility(false);
+}
+
+// 사격 개시
+void ABasePlayerCharacter::InputFire(const FInputActionValue& inputValue)
+{
+	// 스나이퍼건 사용시
+	if (bUsingSniperGun)
+	{
+		// LineTrace 의 시작 위치
+		FVector startPos = CameraComp->GetComponentLocation();
+		// LineTrace 의 종료 위치
+		FVector endPos = CameraComp->GetComponentLocation() + CameraComp->GetForwardVector() * 5000;
+		// LineTrace 의 충돌 정보를 담을 변수
+		FHitResult hitInfo;
+		// 충돌 옵션 설정 변수
+		FCollisionQueryParams params;
+		// 자기 자신(플레이어)는 충돌에서 제외
+		params.AddIgnoredActor(this);
+		// Channel 필터를 이용한 LineTrace 충돌 검출(충돌 정보, 시작 위치, 종료 위치, 검출 채널, 충돌 옵션)
+		bool bHit = GetWorld()->LineTraceSingleByChannel(hitInfo, startPos, endPos, ECC_Visibility, params);
+		// LineTrace가 부딪혔을 때
+		if (bHit)
+		{
+			// 총알 파편 효과 트랜스폼
+			FTransform bulletTrans;
+			// 부딪힌 위치 할당
+			bulletTrans.SetLocation(hitInfo.ImpactPoint);
+			// 총알 파편 효과 인스턴스 생성
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), bulletEffectFactory, bulletTrans);
+		}
+	}
+
 }
