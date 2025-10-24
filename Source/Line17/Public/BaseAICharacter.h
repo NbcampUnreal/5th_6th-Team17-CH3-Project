@@ -6,6 +6,16 @@
 #include "GameFramework/Character.h"
 #include "BaseAICharacter.generated.h"
 
+// test 용 색깔
+UENUM(BlueprintType)
+enum class EAIState : uint8
+{
+	Patrolling,
+	Chasing,
+	Investigating
+};
+// test 용 색깔
+
 UCLASS()
 class LINE17_API ABaseAICharacter : public ACharacter
 {
@@ -22,7 +32,18 @@ public:
 	UPROPERTY(EditAnywhere, Category = "AI")
 	float RunSpeed = 600.0f;
 
+	// 색상 업데이트
+	void UpdateStateColor(EAIState NewState);
+
 protected:
+
+	// 색 큐브 메시 
+	UPROPERTY(VisibleAnywhere, Category = "AI")
+	UStaticMeshComponent* StateMesh;
+
+	// 머티리얼 인스턴스
+	UPROPERTY()
+	UMaterialInstanceDynamic* StateMaterial;
 
 	virtual void BeginPlay() override;
 
