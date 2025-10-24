@@ -22,6 +22,17 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* CameraComp;
 
+	// 스나이퍼건 스태틱메시 추가
+	UPROPERTY(VisibleAnywhere, Category = GunMesh)
+	class UStaticMeshComponent* sniperGunComp;
+
+	// 스나이퍼 건으로 사용중인지 여부
+	bool bUsingSniperGun = true;
+	// 스나이퍼건으로 변경
+	void ChangeToSniperGun(const struct FInputActionValue& inputValue);
+	// 무기 장착 해제
+	void ChangeToNonWeapon(const struct FInputActionValue& inputValue);
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

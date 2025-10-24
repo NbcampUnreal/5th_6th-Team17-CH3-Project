@@ -6,7 +6,9 @@ ABasePlayerController::ABasePlayerController()
 	: InputMappingContext(nullptr),
 	MoveAction(nullptr),
 	LookAction(nullptr),
-	SprintAction(nullptr)
+	SprintAction(nullptr),
+	SniperGun(nullptr),
+	NonWeapon(nullptr)
 {
 }
 
